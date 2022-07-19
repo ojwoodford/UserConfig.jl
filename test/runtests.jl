@@ -13,7 +13,7 @@ using Test
     @test localstore("user-config-test") === ""
     @test localstore("user-config-test", teststring) === teststring
     @test localstore("user-config-test") === teststring
-    @test localstore("user-config-test", testdict) === testdict
+    @test localstore("user-config-test", testdict) == testdict
     @test localstore("user-config-test") == testdict
     @test localstore("user-config-test", "delete") === ""
     @test localstore("user-config-test") === ""
