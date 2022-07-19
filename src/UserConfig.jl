@@ -11,7 +11,7 @@ import NativeFileDialog, JLD2
 Store and get user config data defined by `strname`.
 """
 function localstore(strname::String, data::Any="")
-    fname = joinpath((DEPOT_PATH[1], "config", string(strname, ".jld2")))
+    fname = joinpath(DEPOT_PATH[1], "config", string(strname, ".jld2"))
     if data === ""
         # Reading the data
         if isfile(fname)
