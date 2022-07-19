@@ -4,7 +4,9 @@ using Test
 @testset "UserConfig.jl" begin
     # Test the filename conversions
     @test string2key("! User Config Test ^") === "user-config-test"
+    @test string2key("! User - Config - Test ^") === "user-config-test"
     @test string2key("123 User Config Test&*!") === "n123-user-config-test"
+    @test string2key("%%  123 User Config Test  &*!") === "n123-user-config-test"
 
     # Test the saving and loading of data
     teststring = "C:\\mypath/myfile.ext"

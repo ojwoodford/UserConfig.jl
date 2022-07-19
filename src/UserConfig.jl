@@ -46,9 +46,15 @@ end
 Convert a string to something suitable as a human-readable key, by removing spaces and special characters.
 """
 function string2key(title::String)
-    key = string(strip(replace(lowercase(title), " "=>"-", r"[^(a-z0-9)]"=>""), '-'))
-    if '0' <= key[1] <= '9'
-        key = string('n', key)
+    key = lowercase(title)                   # Make lowercase
+    key = replace(key, r"[^(a-z0-9- )]"=>"") # Remove special characters
+    key = strip(key)                         # Remove leading and trailing whitespace
+    key = replace(key, " "=>"-")             # Convert spaces to hyphens
+    key = replace(key, r"-+"=>"-")           # Remove multiple hyphens
+    if '0' <= key[1] <= '9'                  # If the string starts with a digit
+        key = string('n', key)                  # Prefix with an 'n'
+    else
+        key = string(key)
     end
     return key
 end
