@@ -11,6 +11,11 @@ using Test
     # Test the saving and loading of data
     teststring = "C:\\mypath/myfile.ext"
     testdict = Dict("array"=>randn(3, 4), "string"=>teststring)
+    @test localstorestring("user-config-test", "delete") === ""
+    @test localstorestring("user-config-test") === ""
+    @test localstorestring("user-config-test", teststring) === teststring
+    @test localstorestring("user-config-test") === teststring
+    @test localstorestring("user-config-test", "delete") === ""
     @test localstore("user-config-test", "delete") === ""
     @test localstore("user-config-test") === ""
     @test localstore("user-config-test", teststring) === teststring

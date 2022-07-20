@@ -1,7 +1,7 @@
 name = "UserConfig"
 uuid = "38191a5c-9707-409e-a5e4-8d538fd01011"
 authors = ["Oliver Woodford"]
-version = "0.2.0"
+version = "0.3.0"
 
 [deps]
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"

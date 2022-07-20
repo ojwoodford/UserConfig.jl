@@ -1,5 +1,5 @@
 module UserConfig
-export localstore, string2key, localpath, localstring 
+export localstore, localstorestring, string2key, localpath, localstring 
 
 import NativeFileDialog, JLD2 
 
@@ -18,7 +18,7 @@ function localstore(strname::String, data::Any="")
             try
                 return JLD2.read(JLD2.jldopen(fname, "r"), "data")
             catch err
-                printstyled(err)
+                print(err)
             end
         end
     elseif data === "delete"
@@ -33,7 +33,49 @@ function localstore(strname::String, data::Any="")
             JLD2.jldsave(fname; data)
             return data
         catch err
-            printstyled(err)
+            print(err)
+        end
+    end
+    # Failure case
+    return ""
+end
+
+"""
+    localstorestring(strname, strin)      # Store string
+    strout = localstorestring(strname)    # Read string
+    localstorestring(strname, "delete")   # Delete data
+
+Store and get user config string defined by `strname`.
+"""
+function localstorestring(strname::String, strin::String="")
+    fname = joinpath(DEPOT_PATH[1], "config", string(strname, ".txt"))
+    if strin === ""
+        # Reading the data
+        if isfile(fname)
+            try
+                strout = open(fname, "r") do file
+                    read(file, String)
+                end
+                return strout
+            catch err
+                print(err)
+            end
+        end
+    elseif strin === "delete"
+        rm(fname, force=true)
+    else
+        # Writing the data
+        try
+            dname = dirname(fname)
+            if !isdir(dname)
+                mkdir(dname)
+            end
+            open(fname, "w") do file
+                write(file, strin)
+            end
+            return strin
+        catch err
+            print(err)
         end
     end
     # Failure case
@@ -69,7 +111,7 @@ function localpath(title::String, checkfun::Function, isfolder::Bool=false)
     fname = string2key(title)
     while true
         # Get the stored string
-        strout = localstore(fname)
+        strout = localstorestring(fname)
         if checkfun(strout)
             return strout
         end
@@ -85,7 +127,7 @@ function localpath(title::String, checkfun::Function, isfolder::Bool=false)
                 throw(DomainError("file not selected"))
             end
         end
-        if isempty(localstore(fname, strout))
+        if isempty(localstorestring(fname, strout))
             throw(DomainError("unable to store string"))
         end
     end
@@ -101,14 +143,14 @@ function localstring(title::String, checkfun::Function=s->true)
     fname = string2key(title)
     while true
         # Get the stored string
-        strout = localstore(fname)
+        strout = localstorestring(fname)
         if !isempty(strout) && checkfun(strout)
             return strout
         end
         # Ask the user for the string
         println("Please enter your ", title, ":")
         strout = readline()
-        if isempty(localstore(fname, strout))
+        if isempty(localstorestring(fname, strout))
             throw(DomainError("unable to store string"))
         end
     end
