@@ -85,7 +85,7 @@ end
 """
     key = string2key(string)
 
-Convert a string to something suitable as a human-readable key, by removing spaces and special characters.
+Convert a string to something suitable as a human-readable key, variable name or filename, by removing spaces and special characters.
 """
 function string2key(title::String)
     key = lowercase(title)                   # Make lowercase
@@ -94,7 +94,7 @@ function string2key(title::String)
     key = replace(key, " "=>"-")             # Convert spaces to hyphens
     key = replace(key, r"-+"=>"-")           # Remove multiple hyphens
     if '0' <= key[1] <= '9'                  # If the string starts with a digit
-        key = string('n', key)                  # Prefix with an 'n'
+        key = string('n', key)               # Prefix with an 'n'
     else
         key = string(key)
     end
@@ -117,12 +117,14 @@ function localpath(title::String, checkfun::Function, isfolder::Bool=false)
         end
         # Ask the user for the path
         if isfolder
-            strout = NativeFileDialog.pick_folder(string("Select the ", title, " folder"))
+            println(string("Select the ", title, " folder"))
+            strout = NativeFileDialog.pick_folder()
             if !isdir(strout)
                 throw(DomainError("directory not selected"))
             end
         else
-            strout = NativeFileDialog.pick_file(string("Select the ", title, " file"))
+            println(string("Select the ", title, " file"))
+            strout = NativeFileDialog.pick_file()
             if !isfile(strout)
                 throw(DomainError("file not selected"))
             end
