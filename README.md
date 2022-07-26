@@ -27,4 +27,16 @@ Store and get user data defined by `strname`. Data can be of any type, and is st
 ```
 Store and get a user string defined by `strname`. The string is stored in a .txt file, the filename of which is `string2key(strname).txt`; `strname` should therefore be a suitably unique string.
 
+### localpath
+```julia
+    path = localpath(title, checkfun, isfolder=false)
+```
+Get the path to a local file or folder (if `isfolder` is true), and ask the user if they haven't given it before. `checkfun(path)` is run, and only returns the path if true. The path is stored in a .txt file, the filename of which is `string2key(title).txt`; `title` should therefore be a suitably unique string.
+
+### localstring
+```julia
+    strout = localstring(title, checkfun=s->true)
+```
+Get a user specific string (e.g. their Github username), and ask the user if they haven't given it before. checkfun(string) is run, and only returns the string if true. The string is stored in a .txt file, the filename of which is `string2key(title).txt`; `title` should therefore be a suitably unique string.
+
 
