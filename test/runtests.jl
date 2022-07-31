@@ -25,5 +25,9 @@ using Test
     @test localstore("user-config-test", "delete") === ""
     @test localstore("user-config-test") === ""
 
-    # Don't test the interactive methods
+    # Test the interactive methods with a pre-saved strings
+    @test localstorestring("My random test folder", teststring) === teststring
+    @test localpath("My random test folder", s->true, true) === teststring
+    @test localpath("My random test folder", s->true, false) === teststring
+    @test localstore("My random test folder", "delete") === ""
 end
