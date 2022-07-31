@@ -11,7 +11,7 @@ import NativeFileDialog, JLD2
 Store and get user config data defined by `strname`.
 """
 function localstore(strname::String, data::Any="")
-    fname = joinpath(DEPOT_PATH[1], "config", string(strname, ".jld2"))
+    fname = joinpath(DEPOT_PATH[1], "config", string(string2key(strname), ".jld2"))
     if data === ""
         # Reading the data
         if isfile(fname)
@@ -48,7 +48,7 @@ end
 Store and get user config string defined by `strname`.
 """
 function localstorestring(strname::String, strin::String="")
-    fname = joinpath(DEPOT_PATH[1], "config", string(strname, ".txt"))
+    fname = joinpath(DEPOT_PATH[1], "config", string(string2key(strname), ".txt"))
     if strin === ""
         # Reading the data
         if isfile(fname)
@@ -108,10 +108,9 @@ Get the path to a local file or folder (if isfolder is true), and ask the user i
 checkfun(path) is run, and only returns the path if true.
 """
 function localpath(title::String, checkfun::Function, isfolder::Bool=false)
-    fname = string2key(title)
     while true
         # Get the stored string
-        strout = localstorestring(fname)
+        strout = localstorestring(title)
         if checkfun(strout)
             return strout
         end
@@ -129,7 +128,7 @@ function localpath(title::String, checkfun::Function, isfolder::Bool=false)
                 throw(DomainError("file not selected"))
             end
         end
-        if isempty(localstorestring(fname, strout))
+        if isempty(localstorestring(title, strout))
             throw(DomainError("unable to store string"))
         end
     end
@@ -142,17 +141,16 @@ Get a user specific string, and ask the user if they haven't given it before.
 checkfun(string) is run, and only returns the string if true.
 """
 function localstring(title::String, checkfun::Function=s->true)
-    fname = string2key(title)
     while true
         # Get the stored string
-        strout = localstorestring(fname)
+        strout = localstorestring(title)
         if !isempty(strout) && checkfun(strout)
             return strout
         end
         # Ask the user for the string
         println("Please enter your ", title, ":")
         strout = readline()
-        if isempty(localstorestring(fname, strout))
+        if isempty(localstorestring(title, strout))
             throw(DomainError("unable to store string"))
         end
     end
