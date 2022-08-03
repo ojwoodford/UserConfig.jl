@@ -29,5 +29,5 @@ using Test
     @test localstorestring("My random test folder", teststring) === teststring
     @test localpath("My random test folder", s->true, true) === teststring
     @test localpath("My random test folder", s->true, false) === teststring
-    @test localstore("My random test folder", "delete") === ""
+    @test localstorestring("My random test folder", "delete") === ""
 end
