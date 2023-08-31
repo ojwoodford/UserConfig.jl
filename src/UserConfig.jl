@@ -1,7 +1,7 @@
 module UserConfig
 export localstore, localstorestring, string2key, localpath, localstring 
 
-import NativeFileDialog, JLD2 
+import JLD2 
 
 """
     localstore(strname, data)      # Store data
@@ -116,16 +116,16 @@ function localpath(title::String, checkfun::Function, isfolder::Bool=false)
         end
         # Ask the user for the path
         if isfolder
-            println(string("Select the ", title, " folder"))
-            strout = NativeFileDialog.pick_folder()
+            println(string("Enter the complete path to the ", title, " folder:"))
+            strout = readline()
             if !isdir(strout)
-                throw(DomainError("directory not selected"))
+                throw(DomainError("directory path not entered"))
             end
         else
-            println(string("Select the ", title, " file"))
-            strout = NativeFileDialog.pick_file()
+            println(string("Enter the complete path to the ", title, " file:"))
+            strout = readline()
             if !isfile(strout)
-                throw(DomainError("file not selected"))
+                throw(DomainError("file path not entered"))
             end
         end
         if isempty(localstorestring(title, strout))
