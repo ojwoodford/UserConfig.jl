@@ -1,14 +1,12 @@
 name = "UserConfig"
 uuid = "38191a5c-9707-409e-a5e4-8d538fd01011"
 authors = ["Oliver Woodford"]
-version = "0.3.2"
+version = "1.0.0"
 
 [deps]
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-NativeFileDialog = "e1fe445b-aa65-4df4-81c1-2041507f0fd4"
 
 [compat]
-NativeFileDialog = "0.2"
 JLD2 = "0.4"
 julia = "1.6"
 

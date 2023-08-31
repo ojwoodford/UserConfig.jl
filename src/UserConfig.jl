@@ -1,7 +1,7 @@
 module UserConfig
 export localstore, localstorestring, string2key, localpath, localstring 
 
-import NativeFileDialog, JLD2 
+import JLD2 
 
 """
     localstore(strname, data)      # Store data
@@ -10,34 +10,31 @@ import NativeFileDialog, JLD2
 
 Store and get user config data defined by `strname`.
 """
-function localstore(strname::String, data::Any="")
+function localstore(strname::String, data::Any=nothing)
     fname = joinpath(DEPOT_PATH[1], "config", string(string2key(strname), ".jld2"))
-    if data === ""
+    if isnothing(data)
         # Reading the data
         if isfile(fname)
-            try
-                return JLD2.read(JLD2.jldopen(fname, "r"), "data")
-            catch err
-                print(err)
-            end
+            return JLD2.read(JLD2.jldopen(fname, "r"), "data")
         end
-    elseif data === "delete"
+    elseif data == "delete"
+        # Delete the file
         rm(fname, force=true)
     else
         # Writing the data
-        try
-            dname = dirname(fname)
-            if !isdir(dname)
-                mkdir(dname)
-            end
-            JLD2.jldsave(fname; data)
-            return data
-        catch err
-            print(err)
+        dname = dirname(fname)
+        if !isdir(dname)
+            # Create the directory
+            mkdir(dname)
+        else
+            # Delete any existing file (required for Julia 1.6)
+            rm(fname, force=true)
         end
+        JLD2.jldsave(fname; data)
+        return data
     end
-    # Failure case
-    return ""
+    # Default if file doesn't exist (or was deleted)
+    return nothing
 end
 
 """
@@ -47,39 +44,36 @@ end
 
 Store and get user config string defined by `strname`.
 """
-function localstorestring(strname::String, strin::String="")
+function localstorestring(strname::String, strin::String="")::String
     fname = joinpath(DEPOT_PATH[1], "config", string(string2key(strname), ".txt"))
-    if strin === ""
+    
+    if strin == ""
+        if !isfile(fname)
+            return ""
+        end
+
         # Reading the data
-        if isfile(fname)
-            try
-                strout = open(fname, "r") do file
-                    read(file, String)
-                end
-                return strout
-            catch err
-                print(err)
-            end
+        strout = open(fname, "r") do file
+            read(file, String)
         end
-    elseif strin === "delete"
-        rm(fname, force=true)
-    else
-        # Writing the data
-        try
-            dname = dirname(fname)
-            if !isdir(dname)
-                mkdir(dname)
-            end
-            open(fname, "w") do file
-                write(file, strin)
-            end
-            return strin
-        catch err
-            print(err)
-        end
+        return strout
     end
-    # Failure case
-    return ""
+
+    if strin == "delete"
+        # Delete the file
+        rm(fname, force=true)
+        return ""
+    end
+
+    # Writing the data
+    dname = dirname(fname)
+    if !isdir(dname)
+        mkdir(dname)
+    end
+    open(fname, "w") do file
+        write(file, strin)
+    end
+    return strin
 end
 
 """
@@ -116,16 +110,16 @@ function localpath(title::String, checkfun::Function, isfolder::Bool=false)
         end
         # Ask the user for the path
         if isfolder
-            println(string("Select the ", title, " folder"))
-            strout = NativeFileDialog.pick_folder()
+            println(string("Enter the complete path to the ", title, " folder:"))
+            strout = readline()
             if !isdir(strout)
-                throw(DomainError("directory not selected"))
+                throw(DomainError("directory path not entered"))
             end
         else
-            println(string("Select the ", title, " file"))
-            strout = NativeFileDialog.pick_file()
+            println(string("Enter the complete path to the ", title, " file:"))
+            strout = readline()
             if !isfile(strout)
-                throw(DomainError("file not selected"))
+                throw(DomainError("file path not entered"))
             end
         end
         if isempty(localstorestring(title, strout))
