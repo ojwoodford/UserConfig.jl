@@ -17,7 +17,7 @@ A utility function to convert a string to something suitable as a human-readable
     data = localstore(strname)     # Read data
     localstore(strname, "delete")  # Delete data
 ```
-Store and get user data defined by `strname`. Data can be of any type, and is stored in a .jld2 file, the filename of which is `string2key(strname).jld2`; `strname` should therefore be a suitably unique string.
+Store and get user data defined by `strname`. Data can be of any type, and is stored in a .jld2 file, the filename of which is `string2key(strname).jld2`; `strname` should therefore be a suitably unique string. Returns `nothing` if the file doesn't exist.
 
 ### localstorestring
 ```julia
@@ -25,7 +25,7 @@ Store and get user data defined by `strname`. Data can be of any type, and is st
     strout = localstorestring(strname)   # Read data
     localstorestring(strname, "delete")  # Delete data
 ```
-Store and get a user string defined by `strname`. The string is stored in a .txt file, the filename of which is `string2key(strname).txt`; `strname` should therefore be a suitably unique string.
+Store and get a user string defined by `strname`. The string is stored in a .txt file, the filename of which is `string2key(strname).txt`; `strname` should therefore be a suitably unique string. Returns `""` if the file doesn't exist.
 
 ### localpath
 ```julia
